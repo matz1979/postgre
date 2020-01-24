@@ -8,34 +8,23 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 
 # CREATE TABLES
 
-songplay_table_create = ("""CREATE TABLE songplays
+songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays
                     (
                     songplay_id int, 
-                    start_time timestamp without time zone, 
+                    start_time timestamp, 
                     user_id int,
                     level varchar,
-                    song_id int,
-                    artist_id int,
+                    song_id varchar,
+                    artist_id varchar,
                     session_id int,
                     location varchar,
                     user_agent varchar,
-                    PRIMARY KEY (user_id, song_id, artist_id, start_time),
-                    CONSTRAINT songplays_user_user_id_fkey FOREIGN KEY (user_id)
-                        REFERENCES users (user_id) MATCH SIMPLE
-                         ON UPDATE NO ACTION ON DELETE NO ACTION,
-                    CONSTRAINT songplays_songs_songs_id_fkey FOREIGN KEY (song_id)
-                        REFERENCES songs (song_id) MATCH SIMPLE
-                          ON UPDATE NO ACTION ON DELETE NO ACTION,
-                    CONSTRAINT songplays_artist_artist_id_fkey FOREIGN KEY (artist_id)
-                        REFERENCES artist (artist_id) MATCH SIMPLE
-                          ON UPDATE NO ACTION ON DELETE NO ACTION,
-                    CONSTRAINT songplays_time_start_time_fkey FOREIGN KEY (start_time)
-                        REFERENCES time (start_time) MATCH SIMPLE
-                          ON UPDATE NO ACTION ON DELETE NO ACTION
+                    PRIMARY KEY (user_id, song_id, artist_id)
                     );
 """)
 
-user_table_create = ("""CREATE TABLE users 
+
+user_table_create = ("""CREATE TABLE IF NOT EXISTS users 
                     (
                     user_id int PRIMARY KEY,
                     first_name varchar,
@@ -45,19 +34,19 @@ user_table_create = ("""CREATE TABLE users
                     );
 """)
 
-song_table_create = ("""CREATE TABLE songs 
+song_table_create = ("""CREATE TABLE IF NOT EXISTS songs 
                     (
-                    song_id int PRIMARY KEY,
+                    song_id varchar PRIMARY KEY,
                     title varchar,
-                    artist_id int,
+                    artist_id varchar,
                     year int,
-                    duration timestamp without timezone
+                    duration timestamp
                     );
 """)
 
-artist_table_create = ("""CREATE TABLE artist
+artist_table_create = ("""CREATE TABLE IF NOT EXISTS artist
                     (
-                    artist_id int PRIMARY KEY,
+                    artist_id varchar PRIMARY KEY,
                     name varchar,
                     location varchar,
                     latitude numeric,
@@ -65,15 +54,16 @@ artist_table_create = ("""CREATE TABLE artist
                     );
 """)
 
-time_table_create = ("""CREATE TABLE time 
+time_table_create = ("""CREATE TABLE IF NOT EXISTS time 
                     (
-                    start_time timestamp without timezone PRIMARY KEY,
-                    hour numeric,
-                    day numeric,
-                    week numeric,
-                    month numeric,
+                    start_time timestamp,
+                    hour int,
+                    day int,
+                    week int,
+                    month int,
                     year int,
-                    weekday varchar
+                    weekday varchar,
+                    PRIMARY KEY (start_time)
                     );
 """)
 
@@ -96,8 +86,8 @@ artist_table_insert = ("""INSERT INTO artist (artist_id, name, location, latitud
 """)
 
 
-time_table_insert = ("""INSERT INTO time (id, start_time, hour, day, week, month, year, weekday)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s ,%s), (time_df);
+time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, year, weekday)
+                        VALUES (%s, %s, %s, %s, %s, %s ,%s), (time_df);
 """)
 
 # FIND SONGS
