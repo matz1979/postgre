@@ -41,14 +41,19 @@ def process_log_file(cur, filepath):
 
     # insert user records
     for i, row in user_df.iterrows():
-        cur.execute(user_table_insert, row)
+        cur.execute(user_table_insert, list(row))
 
     # insert songplay records
     for index, row in df.iterrows():
         
         # get songid and artistid from song and artist tables
-        results = cur.execute(song_select, (row.song, row.artist, row.length))
-        songid, artistid = results if results else None, None
+        cur.execute(song_select, (row.song, row.artist, row.length))
+        results = cur.fetchone()
+        songid, artistid = results 
+        if results:
+            songid, artistid = results
+        else:
+            songid, artistid = None, None
 
         # insert songplay record
         songplay_data = (index, row.ts, row.userId, row.level, songid, artistid, row.sessonId, row.artist_location, row.userAgent)
