@@ -1,4 +1,8 @@
 {
-    "python.pythonPath": "C:\\Users\\matth\\Anaconda3\\python.exe",
-    "python.formatting.provider": "black"
+    "python.pythonPath": "C:\\Users\\matth\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
+    "python.formatting.provider": "black",
+    "vsintellicode.typescript.completionsEnabled": false,
+    "git.autofetch": true,
+    "git.confirmEmptyCommits": false,
+    "git.enableSmartCommit": true
 }
