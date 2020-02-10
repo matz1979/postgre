@@ -26,31 +26,34 @@ songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays
 
 user_table_create = ("""CREATE TABLE IF NOT EXISTS users 
                     (
-                    user_id int PRIMARY KEY,
+                    user_id int NOT NULL,
                     first_name varchar,
                     last_name varchar,
                     gender varchar,
-                    level varchar
+                    level varchar,
+                    PRIMARY KEY (user_id)
                     );
 """)
 
 song_table_create = ("""CREATE TABLE IF NOT EXISTS songs 
                     (
-                    song_id varchar PRIMARY KEY,
+                    song_id varchar NOT NULL,
                     title varchar,
                     artist_id varchar,
                     year int,
-                    duration numeric
+                    duration numeric,
+                    PRIMARY KEY (song_id)
                     );
 """)
 
 artist_table_create = ("""CREATE TABLE IF NOT EXISTS artist
                     (
-                    artist_id varchar PRIMARY KEY,
+                    artist_id varchar NOT NULL,
                     name varchar,
                     location varchar,
                     latitude numeric,
-                    longitude numeric
+                    longitude numeric,
+                    PRIMARY KEY (artist_id)
                     );
 """)
 
@@ -83,7 +86,8 @@ song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, dura
 """)
 
 artist_table_insert = ("""INSERT INTO artist (artist_id, name, location, latitude, longitude)
-                        VALUES (%s, %s, %s, %s, %s);
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON CONFLICT ON CONSTRAINT artist_pkey DO NOTHING;
 """)
 
 
