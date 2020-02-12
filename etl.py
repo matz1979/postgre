@@ -49,14 +49,14 @@ def process_log_file(cur, filepath):
         # get songid and artistid from song and artist tables
         cur.execute(song_select, (row.song, row.artist, row.length))
         results = cur.fetchone()
-        songid, artistid = results 
+        song_id, artist_id = results 
         if results:
-            songid, artistid = results
+            song_id, artist_id = results
         else:
-            songid, artistid = None, None
+            song_id, artist_id = None, None
 
         # insert songplay record
-        songplay_data = (index, row.ts, row.userId, row.level, songid, artistid, row.sessonId, row.artist_location, row.userAgent)
+        songplay_data = (index, row.ts, row.userId, row.level, song_id, artist_id, row.sessonId, row.artist_location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
