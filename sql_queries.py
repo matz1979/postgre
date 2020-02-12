@@ -10,7 +10,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 
 songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays
                     (
-                    songplay_id SERIAL,
+                    songplay_id SERIAL PRIMARY KEY,
                     start_time bigint, 
                     user_id int,
                     level varchar,
@@ -18,55 +18,50 @@ songplay_table_create = ("""CREATE TABLE IF NOT EXISTS songplays
                     artist_id varchar,
                     session_id int,
                     location varchar,
-                    user_agent text,
-                    PRIMARY KEY (songplay_id)
+                    user_agent text
                     );
 """)
 
 
 user_table_create = ("""CREATE TABLE IF NOT EXISTS users 
                     (
-                    user_id int NOT NULL,
+                    user_id int NOT NULL PRIMARY KEY,
                     first_name varchar,
                     last_name varchar,
                     gender varchar,
-                    level varchar,
-                    PRIMARY KEY (user_id)
+                    level varchar
                     );
 """)
 
 song_table_create = ("""CREATE TABLE IF NOT EXISTS songs 
                     (
-                    song_id varchar NOT NULL,
+                    song_id varchar NOT NULL PRIMARY KEY,
                     title varchar,
                     artist_id varchar,
                     year int,
-                    duration numeric,
-                    PRIMARY KEY (song_id)
+                    duration numeric
                     );
 """)
 
 artist_table_create = ("""CREATE TABLE IF NOT EXISTS artist
                     (
-                    artist_id varchar NOT NULL,
+                    artist_id varchar NOT NULL PRIMARY KEY,
                     name varchar,
                     location varchar,
                     latitude numeric,
-                    longitude numeric,
-                    PRIMARY KEY (artist_id)
+                    longitude numeric
                     );
 """)
 
 time_table_create = ("""CREATE TABLE IF NOT EXISTS time 
                     (
-                    start_time bigint,
+                    start_time bigint PRIMARY KEY,
                     hour int,
                     day int,
                     week int,
                     month int,
                     year int,
-                    weekday varchar,
-                    PRIMARY KEY (start_time)
+                    weekday varchar
                     );
 """)
 
@@ -82,7 +77,8 @@ user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gende
 """)
 
 song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, duration)
-                        VALUES (%s, %s, %s, %s , %s);
+                        VALUES (%s, %s, %s, %s , %s)
+                        ON CONFLICT ON CONSTRAINT songs_pkey DO NOTHING;
 """)
 
 artist_table_insert = ("""INSERT INTO artist (artist_id, name, location, latitude, longitude)
