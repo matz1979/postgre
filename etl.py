@@ -6,6 +6,14 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    ''' Read the the json song_file and convert it to a pandas DataFrame (df)
+        and insert the song and artist records in the tables
+
+        arg {
+        :cur = open db connection cursor
+        :filepath = json data filepath
+        }
+    '''
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -19,6 +27,15 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    ''' Read the the json log_file and convert it to a pandas DataFrame (df),
+        filter the df by NextSong create the time_data and user_df
+        and insert the time,user and songplays records in the tables
+
+        arg {
+        :cur = open db connection cursor
+        :filepath = json data filepath
+        }
+    '''
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -49,18 +66,27 @@ def process_log_file(cur, filepath):
         # get songid and artistid from song and artist tables
         cur.execute(song_select, (row.song, row.artist, row.length))
         results = cur.fetchone()
-        song_id, artist_id = results 
+        
         if results:
             song_id, artist_id = results
         else:
             song_id, artist_id = None, None
 
         # insert songplay record
-        songplay_data = (index, row.ts, row.userId, row.level, song_id, artist_id, row.sessonId, row.artist_location, row.userAgent)
+        songplay_data = (index, row.ts, row.userId, row.level, song_id, artist_id, row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
 def process_data(cur, conn, filepath, func):
+    ''' Read in both json files and return the number of files in the filepath
+        also the number of processed files
+        arg {
+        :cur = open db connection cursor
+        :conn = new db connection
+        :filepath = json datafile path
+        :func = Contains the function that will be performed on the provided filepath
+        }
+    '''
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -80,6 +106,7 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    '''Contain the db connection data also the process_data'''
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
