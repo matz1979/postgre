@@ -1,8 +1,0 @@
-{
-    "python.pythonPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe",
-    "python.formatting.provider": "black",
-    "vsintellicode.typescript.completionsEnabled": false,
-    "git.autofetch": true,
-    "git.confirmEmptyCommits": false,
-    "git.enableSmartCommit": true
-}
