@@ -6,22 +6,11 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
-    ''' 
-    
-    Read the the json song_file and convert it to a pandas DataFrame (df) and insert the song and artist records in the tables.
-
-    Args:
-        param cur : open db connection cursor
-        param filepath : json data filepath
-    Returns:
-        : Null
-        
-    '''
     # open song file
     df = pd.read_json(filepath, lines=True)
 
     # insert song record
-    song_data =  list(df[['song_id', 'title', 'artist_id', 'year', 'duration']].values[0])
+    song_data =  df[['song_id', 'title', 'artist_id', 'year', 'duration']].values[0].tolist()
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
@@ -30,18 +19,6 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
-    ''' 
-    
-    Read the the json log_file and convert it to a pandas DataFrame (df), filter the df by NextSong create the time_data and user_df
-    and insert the time,user and songplays records in the tables
-
-    Args:
-        param cur : open db connection cursor
-        param filepath : json data filepath
-    Returns:
-        : Null
-        
-    '''
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -57,14 +34,14 @@ def process_log_file(cur, filepath):
     time_df = pd.DataFrame(dict(zip(column_labels, time_data)))
 
     for i, row in time_df.iterrows():
-        cur.execute(time_table_insert, list(row))
+        cur.execute(time_table_insert, row)
 
     # load user table
     user_df = df[['userId', 'firstName', 'lastName', 'gender', 'level']]
 
     # insert user records
     for i, row in user_df.iterrows():
-        cur.execute(user_table_insert, list(row))
+        cur.execute(user_table_insert, row)
 
     # insert songplay records
     for index, row in df.iterrows():
@@ -72,7 +49,7 @@ def process_log_file(cur, filepath):
         # get songid and artistid from song and artist tables
         cur.execute(song_select, (row.song, row.artist, row.length))
         results = cur.fetchone()
-        
+        #song_id, artist_id = results 
         if results:
             song_id, artist_id = results
         else:
@@ -84,18 +61,6 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
-    ''' 
-    
-    Read in both json files and return the number of files in the filepath also the number of processed files
-    Args:
-        :param cur : open db connection cursor
-        :param conn : new db connection
-        :param filepath : json datafile path
-        :param func : Contains the function that will be performed on the provided filepath
-    Returns:
-        : Null
-        
-    '''
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -115,13 +80,12 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    # connect to the database and open the cursor
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
-    # pass the filepath to the function process_song_file and process_log_file
+
     process_data(cur, conn, filepath='data/song_data', func=process_song_file)
     process_data(cur, conn, filepath='data/log_data', func=process_log_file)
-    # close the connection
+
     conn.close()
 
 
